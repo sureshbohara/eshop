@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+
 function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('cod');
@@ -25,7 +26,6 @@ function Checkout() {
 
   const handleProceed = async () => {
     if (selectedPaymentMethod === 'cod') {
-      // Handle Cash on Delivery (COD) payment method
       const orderData = {
         shipping_charge: '0.00',
         amount: getTotalPrice(),
@@ -59,7 +59,6 @@ function Checkout() {
         navigate('/failed');
       }
     } else if (selectedPaymentMethod === 'paypal') {
-      // Handle PayPal payment method
       try {
         const orderData = {
           shipping_charge: '0.00',
@@ -78,8 +77,14 @@ function Checkout() {
         };
 
         const response = await axios.post('/api/paypal/pay', orderData);
-        if (response.status === 200 && response.data.approval_url) {
-          window.location.href = response.data.approval_url;
+        if (response.status === 200) {
+          const script = document.createElement('script');
+          script.src =
+            'https://www.paypal.com/sdk/js?client-id=ARVYoDCNq3YTEUuGZA9oo1HuZ6WPljQi-kFfcVM2pj9bhGhAaDH2kfbT0LoFjbKzUEOBWFcakRcACd2u';
+          script.async = true;
+          script.onload = setupPayPalButton;
+          script.setAttribute('data-namespace', 'paypal-sdk');
+          document.body.appendChild(script);
         } else {
           toast.error('Payment failed. Please try again.');
           navigate('/failed');
@@ -88,10 +93,57 @@ function Checkout() {
         toast.error('Payment failed. Please try again.');
         navigate('/failed');
       }
-    } else {
-      // Handle other payment methods
+    } else if (selectedPaymentMethod === 'eSewa') {
+      
     }
   };
+
+  const setupPayPalButton = () => {
+    window.paypal
+      .Buttons({
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [
+              {
+                amount: {
+                  currency_code: 'USD',
+                  value: getTotalPrice()
+                }
+              }
+            ]
+          });
+        },
+        onApprove: async (data, actions) => {
+          // Handle successful payment
+          const orderId = data.orderID;
+          try {
+            const response = await axios.post('/api/paypal/payment/success', { orderID: orderId });
+            if (response.status === 200) {
+              toast.success('Payment successful!');
+              localStorage.removeItem('cartItems');
+              navigate('/success');
+            } else {
+              toast.error('Payment failed. Please try again.');
+              navigate('/failed');
+            }
+          } catch (error) {
+            toast.error('Payment failed. Please try again.');
+            navigate('/failed');
+          }
+        },
+        onCancel: (data) => {
+          // Handle payment cancellation
+          toast.error('Payment cancelled.');
+        },
+        onError: (err) => {
+          // Handle error during payment
+          toast.error('Payment failed. Please try again.');
+          navigate('/failed');
+        }
+      })
+      .render('#paypal-button-container');
+  };
+
 
   return (
     <section className="payment-form dark py-4">
@@ -141,7 +193,6 @@ function Checkout() {
                   name="payment_type"
                   id="cod"
                   value="cod"
-                  checked={selectedPaymentMethod === 'cod'}
                   onChange={e => setSelectedPaymentMethod(e.target.value)}
                 />
                 <label className="form-check-label" htmlFor="cod">
@@ -163,6 +214,21 @@ function Checkout() {
                   Paypal
                 </label>
               </div>
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="payment_type"
+                  id="eSewa"
+                  value="eSewa"
+                  onChange={e => setSelectedPaymentMethod(e.target.value)}
+                />
+                <label className="form-check-label" htmlFor="eSewa">
+                  eSewa
+                </label>
+              </div>
+
             </div>
 
             <div className="row">
@@ -177,6 +243,8 @@ function Checkout() {
               </div>
             </div>
           </div>
+
+          <div id="paypal-button-container"></div>
         </form>
       </div>
     </section>
