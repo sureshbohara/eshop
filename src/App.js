@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import MyRouter from './router/index.js';
+import Navbar from './components/Navbar.js';
+import Footer from './components/Footer.js';
+import CategoryMenu from './components/Category.js';
+import AppBar from './components/AppBar.js';
+import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+axios.defaults.baseURL = 'http://127.0.0.1:8000/';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers.post['Accept'] = 'application/json';
+axios.defaults.withCredentials = true;
+// Enable CORS in Axios
+axios.interceptors.request.use(function (config) {
+  config.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+  config.headers['Access-Control-Allow-Credentials'] = 'true';
+  config.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
+  return config;
+});
+// Set the CSRF token if your Laravel application uses it
+// Replace 'csrf_token' with your actual CSRF token field name
+const csrfToken = document.head.querySelector('meta[name="csrf-token"]');
+if (csrfToken) {
+  axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken.content;
+}
+
+
+// logout script
+axios.interceptors.request.use(function (config){
+  const token = localStorage.getItem('auth_token');
+  config.headers.Authorization = token ? `Bearer ${token}` : '';
+  return config;
+});
+//end
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ToastContainer />
+      <Navbar />
+      <CategoryMenu/>
+      <MyRouter />
+      <Footer />
+      <AppBar/>
+    </>
   );
 }
 
