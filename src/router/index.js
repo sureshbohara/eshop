@@ -15,7 +15,7 @@ import Dashboard from '../pages/Dashboard';
 import Order from '../pages/Order';
 import Wishlist from '../pages/Wishlist';
 import CmsPage from '../pages/CmsPage';
-
+import PrivateRoute from '../components/PrivateRoute';
 function MyRouter() {
   return (
     <Routes>
@@ -27,12 +27,16 @@ function MyRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/wishlist" element={<Wishlist />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/success" element={<Success />} />
-      <Route path="/failed" element={<Failed />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/order/:id" element={<Order />} />
+
+      <Route path="/user" element={<PrivateRoute/>}>
+        <Route path="wishlist" element={<Wishlist />} />
+        <Route path="checkout" element={<Checkout />} />
+        <Route path="success" element={<Success />} />
+        <Route path="failed" element={<Failed />} />
+        <Route path="dashboard" element={<Dashboard />} />
+       <Route path="order/:id" element={<Order />} />
+      </Route>
+     
       <Route path="/about-us" element={<CmsPage slug="about-us" />} />
       <Route path="/delivery-info" element={<CmsPage slug="delivery-info" />} />
       <Route path="/payment-policy" element={<CmsPage slug="payment-policy" />} />

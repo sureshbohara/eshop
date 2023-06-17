@@ -34,7 +34,7 @@ function HotSection() {
               title="blogs"
               alt="blogs"
             />
-            <span className="mt-2 mt-lg-0">Blogs</span>
+            <span className="mt-2 mt-lg-0">FAQ's</span>
           </div>
         </Link>
         <Link to="" className="categories-menu">

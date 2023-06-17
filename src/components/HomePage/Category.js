@@ -3,22 +3,20 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Popup from '../Popup';
+
 function Category() {
   const [whisky, setWhisky] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-  // popup
-  const [showPopup, setShowPopup] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleShow = (whiskyItem) => {
     setSelectedItem(whiskyItem);
-    setShowPopup(true);
   };
 
   const handleClose = () => {
-    setShowPopup(false);
+    setSelectedItem(null);
   };
-// end popup
+
   useEffect(() => {
     axios
       .get('/api/whisky')
@@ -61,35 +59,35 @@ function Category() {
     }
   }, []);
 
-const addWishlist = (whiskyItem) => {
-  // Make an API call to add the item to the wishlist
-  axios.post('/api/wishlist', {
-    product_id: whiskyItem.id,
-    product_name: whiskyItem.name,
-    product_price: whiskyItem.product_price,
-    color: whiskyItem.color,
-    size: whiskyItem.size,
-    product_qty: 1
-  })
-    .then((response) => {
-      if (response.status === 200) {
-        toast.success(response.data.message);
-      } else if (response.status === 202) {
-        toast.info(response.data.message);
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        if (error.response.status === 401) {
-          toast.error('Please login to continue');
-        } else {
-          toast.error(error.response.data.message);
+  const addWishlist = (whiskyItem) => {
+    axios
+      .post('/api/wishlist', {
+        product_id: whiskyItem.id,
+        product_name: whiskyItem.name,
+        product_price: whiskyItem.product_price,
+        color: whiskyItem.color,
+        size: whiskyItem.size,
+        product_qty: 1
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          toast.success(response.data.message);
+        } else if (response.status === 202) {
+          toast.info(response.data.message);
         }
-      } else {
-        toast.error('An error occurred while adding to the wishlist');
-      }
-    });
-};
+      })
+      .catch((error) => {
+        if (error.response) {
+          if (error.response.status === 401) {
+            toast.error('Please login to continue');
+          } else {
+            toast.error(error.response.data.message);
+          }
+        } else {
+          toast.error('An error occurred while adding to the wishlist');
+        }
+      });
+  };
 return (
     <>
       {whisky.map((whiskyItem, idx) => (

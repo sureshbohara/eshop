@@ -39,7 +39,7 @@ function Cart() {
   const makePurchase = () => {
     const storedIsLoggedIn = localStorage.getItem('auth_token');
     if (storedIsLoggedIn) {
-      navigate('/checkout');
+      navigate('/user/checkout');
     } else {
       toast.error('Please log in to make a checkout');
       navigate('/login');

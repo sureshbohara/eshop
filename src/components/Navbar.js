@@ -54,7 +54,7 @@ function Navbar() {
 
    const AuthButtons1 = localStorage.getItem('auth_token') ? (
     <li className="nav-item d-none d-sm-block">
-      <Link className="nav-link active d-flex flex-column" to="/dashboard">
+      <Link className="nav-link active d-flex flex-column" to="/user/dashboard">
         <small style={{ fontSize: '11px' }}>Hello</small>
         <strong style={{ fontSize: '12px' }}>
           {localStorage.getItem('auth_token') ? firstName : null}
@@ -135,7 +135,7 @@ function Navbar() {
           </li>
 
           <li className="nav-item d-none d-sm-block" style={{ fontSize: '20px' }}>
-            <Link className="nav-link d-flex" to="/wishlist">
+            <Link className="nav-link d-flex" to="/user/wishlist">
               <i className="bi bi-heart-fill text-white me-2 fs-5"></i>
             </Link>
           </li>

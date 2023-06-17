@@ -3,9 +3,20 @@ import { Carousel, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Popup from '../Popup';
 function RecenltyViewItems() {
   const [recentView, setRecentView] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleShow = (product) => {
+    setSelectedItem(product);
+  };
+
+  const handleClose = () => {
+    setSelectedItem(null);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -140,12 +151,10 @@ const addToCart = (product) => {
                             >
                               <i className="bi bi-bookmark-heart"></i>
                             </Link>
-                            <Link
-                              to="#"
-                              className="btn text-warning"
-                            >
-                              <i className="bi bi-envelope"></i>
-                            </Link>
+                            <Link to="#" className="btn text-warning" onClick={() => handleShow(product)}>
+                                  <i className="bi bi-envelope"></i>
+                              </Link>
+
                           </Card.Footer>
                         </Card>
                       </div>
@@ -153,6 +162,10 @@ const addToCart = (product) => {
                   </div>
                 </Carousel.Item>
               ))}
+
+               {selectedItem && (
+                     <Popup selectedItem={selectedItem} onClose={handleClose} />
+              )}
             </Carousel>
           </div>
         </div>

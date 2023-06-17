@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import electronicsImage from '../images/icon.png';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
 function Brand() {
   const [brandData, setBrandData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+   
 
   useEffect(() => {
     axios

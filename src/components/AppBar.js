@@ -1,6 +1,5 @@
 import React from 'react';
 import { Nav } from 'react-bootstrap';
-
 function AppBar() {
   const isMobileView = window.innerWidth <= 767;
   if (!isMobileView) {
@@ -33,19 +32,19 @@ function AppBar() {
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link href="#" style={linkStyle}>
+        <Nav.Link href="/cart" style={linkStyle}>
           <i className="bi bi-basket" style={iconStyle}></i>
           Cart
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link href="#" style={linkStyle}>
+        <Nav.Link href="/" style={linkStyle}>
           <i className="bi bi-whatsapp" style={iconStyle}></i>
           Call
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link href="#" style={linkStyle}>
+        <Nav.Link href="/dashboard" style={linkStyle}>
           <i className="bi bi-person-bounding-box" style={iconStyle}></i>
           Profile
         </Nav.Link>

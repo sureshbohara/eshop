@@ -3,12 +3,22 @@ import axios from 'axios';
 import Sidebar from '../inc/Sidebar.js';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import Popup from '../components/Popup.js';
 function Category() {
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const { slug } = useParams();
   const [cartItems, setCartItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleShow = (product) => {
+    setSelectedItem(product);
+  };
+
+  const handleClose = () => {
+    setSelectedItem(null);
+  };
+
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`/api/category/${slug}`);
@@ -134,13 +144,17 @@ function Category() {
                       <Link to="#" className="btn text-warning" onClick={() => addWishlist(product)}>
                         <i className="bi bi-bookmark-heart"></i>
                       </Link>
-                      <Link to="#" className="btn text-warning">
-                        <i className="bi bi-envelope"></i>
-                      </Link>
+                       <Link to="#" className="btn text-warning" onClick={() => handleShow(product)}>
+                                  <i className="bi bi-envelope"></i>
+                        </Link>
                     </div>
                   </div>
                 </div>
               ))}
+
+              {selectedItem && (
+                     <Popup selectedItem={selectedItem} onClose={handleClose} />
+              )}
             </div>
           </div>
         </div>
